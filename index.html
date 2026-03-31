@@ -985,14 +985,20 @@ function render() {
 
       const label = document.createElement('label');
       label.className = labelClass;
+      label.dataset.qid = q.id;
+      label.dataset.cid = c.id;
+      label.dataset.multi = q.multi ? '1' : '0';
       label.innerHTML = `
         <input type="${inputType}" name="${q.id}" value="${c.id}" ${checkedAttr} ${locked ? 'disabled' : ''}>
-        <div class="choice-box">${c.id}</div>
+        <div class="choice-box" data-box="${c.id}">${c.id}</div>
         <span class="choice-txt">${c.text}</span>
         ${icon}`;
 
       if (!locked) {
-        label.addEventListener('click', () => toggleChoice(q.id, c.id, q.multi));
+        label.addEventListener('click', function(e) {
+          e.preventDefault();
+          toggleChoice(this.dataset.qid, this.dataset.cid, this.dataset.multi === '1');
+        });
       }
 
       choicesDiv.appendChild(label);
@@ -1053,16 +1059,18 @@ function toggleChoice(qId, choiceId, multi) {
   const btn = document.getElementById('btn-' + qId);
   if (btn) btn.disabled = s.selected.size === 0;
 
-  // Re-render just this card's choices
-  const q = QUESTIONS.find(x => x.id === qId);
+  // Re-render choices visual state using data attributes
   const choicesDiv = document.querySelector('#card-' + qId + ' .choices');
   if (choicesDiv) {
-    q.choices.forEach(c => {
-      const label = choicesDiv.querySelector(`label:has(input[value="${c.id}"])`);
-      if (label) {
-        label.className = 'choice-label' + (s.selected.has(c.id) ? ' selected' : '');
-        const box = label.querySelector('.choice-box');
-        if (box) box.style.background = s.selected.has(c.id) ? 'var(--accent)' : '';
+    choicesDiv.querySelectorAll('.choice-label').forEach(function(lbl) {
+      var cid = lbl.dataset.cid;
+      var sel = s.selected.has(cid);
+      lbl.className = 'choice-label' + (sel ? ' selected' : '');
+      var box = lbl.querySelector('.choice-box');
+      if (box) {
+        box.style.background  = sel ? 'var(--accent)' : '';
+        box.style.borderColor = sel ? 'var(--accent)' : '';
+        box.style.color       = sel ? '#fff' : '';
       }
     });
   }
@@ -1083,13 +1091,15 @@ function validate(qId) {
   // Update card
   const card = document.getElementById('card-' + qId);
   const choicesDiv = card.querySelector('.choices');
-  q.choices.forEach(c => {
-    const label = choicesDiv.querySelector(`label:has(input[value="${c.id}"])`);
-    if (!label) return;
+  choicesDiv.querySelectorAll('.choice-label').forEach(function(label) {
+    var cid = label.dataset.cid;
+    var isCorrect  = correctSet.has(cid);
+    var isSelected = s.selected.has(cid);
     label.classList.add('locked');
     label.classList.remove('selected');
-    const isCorrect = correctSet.has(c.id);
-    const isSelected = s.selected.has(c.id);
+    // reset inline styles set during toggleChoice
+    var box = label.querySelector('.choice-box');
+    if (box) { box.style.background = ''; box.style.borderColor = ''; box.style.color = ''; }
     if (isCorrect) {
       label.classList.add('correct-ans');
       label.insertAdjacentHTML('beforeend','<span class="choice-icon">✓</span>');
