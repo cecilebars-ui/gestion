@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCM — Gestion Opérationnelle BTS MCO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & tokens ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:        #0d1117;
+  --ink-soft:   #4a5568;
+  --ink-mute:   #8a97a8;
+  --paper:      #f9f8f5;
+  --surface:    #ffffff;
+  --rule:       #e2ddd6;
+
+  --accent:     #1a56db;
+  --accent-dk:  #1040b0;
+  --accent-lt:  #e8f0fe;
+
+  --ok:         #0d7a3e;
+  --ok-bg:      #e6f5ec;
+  --ok-border:  #4caf82;
+
+  --wrong:      #b91c1c;
+  --wrong-bg:   #fef2f2;
+  --wrong-border:#f87171;
+
+  --warn:       #92400e;
+  --warn-bg:    #fffbeb;
+  --warn-border:#f59e0b;
+
+  --radius:     10px;
+  --radius-lg:  16px;
+  --shadow:     0 2px 12px rgba(0,0,0,.07);
+  --shadow-md:  0 4px 24px rgba(0,0,0,.10);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--paper);
+  min-height: 100vh;
+}
+
+/* ─── Layout ──────────────────────────────────────────────────── */
+.shell {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ─── Hero ────────────────────────────────────────────────────── */
+.hero {
+  background: var(--ink);
+  color: #fff;
+  padding: 56px 40px 48px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: .12;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: -40px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: #4ade80;
+  opacity: .07;
+}
+.hero-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 10px;
+  position: relative;
+}
+.hero-sub {
+  color: rgba(255,255,255,.6);
+  font-size: 15px;
+  font-weight: 300;
+  margin-bottom: 28px;
+  position: relative;
+}
+.hero-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 13px;
+  color: rgba(255,255,255,.8);
+}
+.pill svg { width: 14px; height: 14px; opacity: .7; }
+
+/* ─── Progress bar ────────────────────────────────────────────── */
+.progress-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 0;
+  margin-bottom: 36px;
+}
+.progress-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+}
+.progress-track {
+  height: 4px;
+  background: var(--rule);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 99px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ─── Theme separator ─────────────────────────────────────────── */
+.theme-sep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 44px 0 28px;
+}
+.theme-sep-line { flex: 1; height: 1px; background: var(--rule); }
+.theme-sep-badge {
+  font-family: 'Syne', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-lt);
+  border: 1px solid rgba(26,86,219,.2);
+  border-radius: 100px;
+  padding: 4px 14px;
+  white-space: nowrap;
+}
+
+/* ─── Question card ───────────────────────────────────────────── */
+.q-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow .2s;
+}
+.q-card:hover { box-shadow: var(--shadow-md); }
+
+.q-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 22px 16px;
+}
+.q-num {
+  flex-shrink: 0;
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: #fff;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+.q-text {
+  flex: 1;
+  font-size: 15.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.q-multi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--warn);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  border-radius: 6px;
+  padding: 3px 8px;
+  margin-top: 6px;
+}
+
+/* ─── Choices ─────────────────────────────────────────────────── */
+.choices {
+  padding: 0 22px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.choice-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .1s;
+  position: relative;
+  user-select: none;
+}
+.choice-label:hover:not(.locked) {
+  border-color: var(--accent);
+  background: var(--accent-lt);
+  transform: translateX(2px);
+}
+.choice-label input[type=radio],
+.choice-label input[type=checkbox] {
+  display: none;
+}
+.choice-box {
+  flex-shrink: 0;
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  border: 1.5px solid var(--rule);
+  background: var(--paper);
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.choice-label:hover:not(.locked) .choice-box {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.choice-label.selected .choice-box {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.choice-label.selected { border-color: var(--accent); background: var(--accent-lt); }
+
+/* After reveal */
+.choice-label.correct-ans {
+  border-color: var(--ok-border);
+  background: var(--ok-bg);
+}
+.choice-label.correct-ans .choice-box {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+.choice-label.wrong-sel {
+  border-color: var(--wrong-border);
+  background: var(--wrong-bg);
+}
+.choice-label.wrong-sel .choice-box {
+  background: var(--wrong);
+  border-color: var(--wrong);
+  color: #fff;
+}
+.choice-label.locked { cursor: default; }
+.choice-label.locked:hover { transform: none; }
+
+.choice-txt {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  padding-top: 2px;
+}
+.choice-icon {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-size: 16px;
+  padding-top: 2px;
+}
+
+/* ─── Validate button ─────────────────────────────────────────── */
+.q-footer {
+  padding: 14px 22px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.btn-validate {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 9px 22px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: #fff;
+  transition: background .15s, transform .1s, opacity .15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-validate:hover:not(:disabled) { background: var(--accent-dk); transform: translateY(-1px); }
+.btn-validate:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn-validate.done { background: var(--ink); }
+
+/* ─── Feedback panel ──────────────────────────────────────────── */
+.feedback {
+  margin: 0 22px 18px;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  display: none;
+  animation: slideIn .25s ease;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.feedback.show { display: block; }
+.feedback-head {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.feedback.fb-ok  { background: var(--ok-bg);    border: 1.5px solid var(--ok-border);    color: var(--ok); }
+.feedback.fb-ok .feedback-body { color: #1d4a33; }
+.feedback.fb-err { background: var(--wrong-bg); border: 1.5px solid var(--wrong-border); color: var(--wrong); }
+.feedback.fb-err .feedback-body { color: #6b1414; }
+.feedback-body { color: inherit; font-size: 14px; line-height: 1.6; }
+.feedback-body strong { font-weight: 600; }
+
+/* ─── Score panel ─────────────────────────────────────────────── */
+#score-section {
+  display: none;
+  margin-top: 48px;
+  animation: fadeUp .4s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  padding: 40px 36px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+.score-ring-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 24px;
+}
+.score-ring {
+  transform: rotate(-90deg);
+  width: 140px;
+  height: 140px;
+}
+.score-ring-bg  { fill: none; stroke: var(--rule);   stroke-width: 10; }
+.score-ring-arc { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+.score-num {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: 'Syne', sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.score-label {
+  font-size: 13px;
+  color: var(--ink-mute);
+  margin-top: -2px;
+  font-weight: 300;
+}
+.score-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.score-msg {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+}
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.score-stat {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 14px 10px;
+}
+.score-stat-n {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.score-stat-n.ok    { color: var(--ok); }
+.score-stat-n.wrong { color: var(--wrong); }
+.score-stat-n.skip  { color: var(--ink-mute); }
+.score-stat-lbl {
+  font-size: 12px;
+  color: var(--ink-mute);
+  font-weight: 500;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.btn-restart {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 12px 30px;
+  border-radius: 8px;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.btn-restart:hover { background: var(--ink); color: #fff; }
+
+/* ─── Submit all button ───────────────────────────────────────── */
+#submit-wrap {
+  text-align: center;
+  margin-top: 36px;
+  display: none;
+}
+.btn-submit-all {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 16px 48px;
+  border-radius: 10px;
+  border: none;
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  box-shadow: 0 4px 20px rgba(13,17,23,.25);
+}
+.btn-submit-all:hover { background: #262f3d; transform: translateY(-2px); }
+
+/* ─── Footer ──────────────────────────────────────────────────── */
+.site-footer {
+  text-align: center;
+  margin-top: 60px;
+  padding: 20px;
+  font-size: 12px;
+  color: var(--ink-mute);
+  border-top: 1px solid var(--rule);
+}
+
+/* ─── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .hero { padding: 40px 24px 36px; }
+  .q-head { padding: 16px 16px 12px; }
+  .choices { padding: 0 16px 4px; }
+  .q-footer { padding: 12px 16px 16px; }
+  .feedback { margin: 0 16px 14px; }
+  .score-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="shell" style="padding-top:0;padding-bottom:0">
+    <div class="hero-label">BTS MCO · Gestion Opérationnelle · Révisions examen</div>
+    <h1>QCM — Bilan &amp; Compte de résultat</h1>
+    <p class="hero-sub">Testez vos connaissances sur les deux chapitres clés avant l'examen final.</p>
+    <div class="hero-meta">
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ~25 minutes
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        21 questions
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+        Correction immédiate
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-info">
+      <span id="prog-text">0 / 21 répondu(es)</span>
+      <span id="prog-pct">0 %</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<div class="shell">
+  <div id="qcm-container"></div>
+  <div id="submit-wrap">
+    <button class="btn-submit-all" onclick="showScore()">Voir mon score final →</button>
+  </div>
+  <div id="score-section">
+    <div class="score-card">
+      <div class="score-ring-wrap">
+        <svg class="score-ring" viewBox="0 0 140 140">
+          <circle class="score-ring-bg" cx="70" cy="70" r="60"/>
+          <circle class="score-ring-arc" id="ring-arc" cx="70" cy="70" r="60"
+            stroke-dasharray="377" stroke-dashoffset="377"/>
+        </svg>
+        <div class="score-num" id="score-num">0</div>
+      </div>
+      <div class="score-label" id="score-label">/ 21 points</div>
+      <h2 class="score-title" id="score-title">—</h2>
+      <p class="score-msg" id="score-msg"></p>
+      <div class="score-grid">
+        <div class="score-stat">
+          <div class="score-stat-n ok" id="stat-ok">0</div>
+          <div class="score-stat-lbl">Bonnes<br>réponses</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-stat-n wrong" id="stat-wrong">0</div>
+          <div class="score-stat-lbl">Mauvaises<br>réponses</div>
+        </div>
+        <div class="score-stat">
+          <div class="score-stat-n skip" id="stat-skip">0</div>
+          <div class="score-stat-lbl">Sans<br>réponse</div>
+        </div>
+      </div>
+      <button class="btn-restart" onclick="restart()">↺ Recommencer</button>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">BTS MCO · Gestion Opérationnelle · Document pédagogique</footer>
+
+<script>
+/* ─────────────────────────────────────────────────────────────────
+   DATA
+───────────────────────────────────────────────────────────────── */
+const QUESTIONS = [
+  // ══ THÈME 1 : COMPTE DE RÉSULTAT ══════════════════════════════
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q1",
+    stem: "Le compte de résultat récapitule :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Ce que l'entreprise possède et ce qu'elle doit à une date donnée" },
+      { id:"B", text:"L'ensemble des charges et des produits sur une période de 12 mois" },
+      { id:"C", text:"Uniquement les opérations d'achat et de vente de marchandises" },
+      { id:"D", text:"Les flux de trésorerie encaissés et décaissés pendant l'exercice" },
+    ],
+    correct: ["B"],
+    expl: "Le compte de résultat est un document <strong>dynamique</strong> (contrairement au bilan qui est statique). Il synthétise les <strong>charges</strong> (appauvrissement) et les <strong>produits</strong> (enrichissement) sur toute la durée de l'exercice comptable, généralement 12 mois. Le bilan, lui, photographie le patrimoine à une date précise."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q2",
+    stem: "Les intérêts versés à une banque pour le remboursement d'un emprunt figurent dans :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Les charges d'exploitation" },
+      { id:"B", text:"Les charges exceptionnelles" },
+      { id:"C", text:"Les charges financières" },
+      { id:"D", text:"Les produits financiers" },
+    ],
+    correct: ["C"],
+    expl: "Les <strong>intérêts d'emprunt</strong> résultent des choix de financement de l'entreprise (recours à l'emprunt bancaire). Ils relèvent donc des <strong>charges financières</strong>. À ne pas confondre avec le remboursement du capital de l'emprunt, qui lui n'apparaît pas dans le compte de résultat mais au bilan."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q3",
+    stem: "La vente d'un véhicule utilitaire d'occasion appartenant à l'entreprise est :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Un produit d'exploitation" },
+      { id:"B", text:"Un produit financier" },
+      { id:"C", text:"Un produit exceptionnel" },
+      { id:"D", text:"Une charge d'exploitation" },
+    ],
+    correct: ["C"],
+    expl: "La cession d'une immobilisation (ici un véhicule) ne correspond ni à l'activité courante de l'entreprise ni à sa politique financière. C'est une opération <strong>exceptionnelle</strong>, donc un <strong>produit exceptionnel</strong>. De même, une amende fiscale sera une charge exceptionnelle."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q4",
+    stem: "Parmi les postes suivants, lesquels sont des charges d'exploitation ? (plusieurs réponses possibles)",
+    multi: true,
+    choices: [
+      { id:"A", text:"Achat de marchandises" },
+      { id:"B", text:"Dividendes perçus sur des actions détenues" },
+      { id:"C", text:"Salaires et charges sociales" },
+      { id:"D", text:"Don à une association caritative" },
+      { id:"E", text:"Dotations aux amortissements" },
+    ],
+    correct: ["A","C","E"],
+    expl: "<strong>A, C et E sont des charges d'exploitation.</strong> Les achats de marchandises et les salaires font partie du cycle normal d'activité. Les dotations aux amortissements constatent la perte de valeur des immobilisations. En revanche, les dividendes perçus sont un <strong>produit financier</strong> (placement), et un don est une <strong>charge exceptionnelle</strong>."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q5",
+    stem: "Une entreprise a un stock initial de 40 articles (achetés 5 € l'un) et achète 200 articles supplémentaires à 5 €. Son stock final est de 20 articles. Quel est le Coût d'Achat des Marchandises Vendues (CAMV) ?",
+    multi: false,
+    choices: [
+      { id:"A", text:"1 000 €  (= 200 × 5 €)" },
+      { id:"B", text:"1 100 €  (= 200 × 5 + 40 × 5 − 20 × 5)" },
+      { id:"C", text:"900 €   (= 200 × 5 − 40 × 5 + 20 × 5)" },
+      { id:"D", text:"1 200 €  (= (200 + 40) × 5)" },
+    ],
+    correct: ["B"],
+    expl: "<strong>CAMV = Achats + Stock initial − Stock final</strong> = (200 × 5) + (40 × 5) − (20 × 5) = 1 000 + 200 − 100 = <strong>1 100 €</strong>. La variation de stocks (Si − Sf = 40 − 20 = +20 articles) s'ajoute aux achats car les stocks ont diminué (on a vendu plus qu'on n'a acheté)."
+  },
+  // SIG
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q6",
+    stem: "La marge commerciale se calcule ainsi :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Chiffre d'affaires HT − Achats de marchandises HT" },
+      { id:"B", text:"Ventes de marchandises HT − Coût d'achat des marchandises vendues" },
+      { id:"C", text:"Chiffre d'affaires TTC − Achats TTC" },
+      { id:"D", text:"Ventes de marchandises − Charges d'exploitation totales" },
+    ],
+    correct: ["B"],
+    expl: "<strong>Marge commerciale = Ventes de marchandises − CAMV</strong> (CAMV = achats ± variation de stocks). La nuance avec la réponse A : le CAMV tient compte de la variation de stocks, ce que ne fait pas « Achats HT » seul. Tous les calculs du compte de résultat sont <strong>hors taxes (HT)</strong>."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q7",
+    stem: "La Valeur Ajoutée (VA) représente :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Le chiffre d'affaires diminué des seuls achats de marchandises" },
+      { id:"B", text:"La richesse créée par l'entreprise, après déduction des consommations en provenance de tiers" },
+      { id:"C", text:"Le résultat d'exploitation avant dotations aux amortissements" },
+      { id:"D", text:"La marge commerciale à laquelle on soustrait les charges de personnel" },
+    ],
+    correct: ["B"],
+    expl: "<strong>VA = Marge commerciale + Production de l'exercice − Autres achats et charges externes</strong>. Elle mesure la richesse <em>créée</em> par l'entreprise elle-même (ce qu'elle ajoute à la valeur des intrants). Elle sert à rémunérer les salariés, l'État, les banques et les associés."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q8",
+    stem: "L'Excédent Brut d'Exploitation (EBE) est particulièrement utile car :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Il représente le bénéfice net de l'entreprise après impôt" },
+      { id:"B", text:"Il mesure le flux potentiel de trésorerie généré par l'exploitation, indépendamment de la politique d'amortissement" },
+      { id:"C", text:"Il prend en compte les charges financières, ce qui permet de comparer des entreprises ayant des dettes différentes" },
+      { id:"D", text:"Il est identique au résultat d'exploitation pour toutes les entreprises" },
+    ],
+    correct: ["B"],
+    expl: "<strong>EBE = VA + Subventions d'exploitation − Impôts et taxes − Charges de personnel.</strong> Il est calculé <em>avant</em> les dotations aux amortissements (DAP) et les charges financières. C'est pourquoi il permet de comparer des entreprises indépendamment de leur politique d'amortissement ou de leur niveau d'endettement. C'est le flux potentiel de trésorerie lié à l'exploitation."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q9",
+    stem: "Le taux de marge commerciale (Marge commerciale / Ventes de marchandises × 100) est de 12 %. Cela signifie que :",
+    multi: false,
+    choices: [
+      { id:"A", text:"L'entreprise réalise 12 € de bénéfice net pour 100 € vendus" },
+      { id:"B", text:"Pour 100 € de marchandises vendues, l'entreprise dégage 12 € après déduction du coût d'achat des marchandises vendues" },
+      { id:"C", text:"Les charges de personnel représentent 12 % du chiffre d'affaires" },
+      { id:"D", text:"L'entreprise reverse 12 % de son CA en TVA" },
+    ],
+    correct: ["B"],
+    expl: "Le taux de marge commerciale mesure la part de l'activité commerciale dans la réalisation du CA. 12 % signifie que sur <strong>100 € vendus</strong>, une fois déduit le coût d'achat des marchandises vendues, il reste <strong>12 € de marge brute</strong>. Ce n'est pas encore le bénéfice net : il faut encore payer les salaires, loyers, amortissements, etc."
+  },
+  {
+    theme: "Thème 1 — Compte de résultat : structure et analyse",
+    id: "q10",
+    stem: "La Capacité d'AutoFinancement (CAF) est égale à :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Résultat net + Dotations aux amortissements et provisions − Reprises sur amortissements et provisions" },
+      { id:"B", text:"Résultat net + Chiffre d'affaires HT" },
+      { id:"C", text:"EBE − charges financières − impôt sur les sociétés" },
+      { id:"D", text:"Résultat d'exploitation + résultat financier + résultat exceptionnel" },
+    ],
+    correct: ["A"],
+    expl: "<strong>CAF = Résultat net + DAP − RAP.</strong> Les dotations aux amortissements (DAP) sont des charges <em>calculées</em> : elles réduisent le résultat mais ne correspondent à aucune sortie d'argent. En les rajoutant, on retrouve le flux de liquidités réellement généré. La CAF sert à investir, rembourser des dettes ou verser des dividendes."
+  },
+
+  // ══ THÈME 2 : BILAN ═══════════════════════════════════════════
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q11",
+    stem: "Le bilan comptable se présente avec :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Le passif (ressources) à gauche et l'actif (emplois) à droite" },
+      { id:"B", text:"L'actif (ce que l'entreprise possède) à gauche et le passif (financement) à droite" },
+      { id:"C", text:"Les charges à gauche et les produits à droite" },
+      { id:"D", text:"Les immobilisations en haut et les dettes en bas, sans distinction gauche/droite" },
+    ],
+    correct: ["B"],
+    expl: "Le bilan est un tableau en deux colonnes : <strong>actif à gauche</strong> (biens détenus, droits) et <strong>passif à droite</strong> (capitaux propres + dettes = sources de financement). Les deux colonnes sont toujours égales (principe de l'équilibre du bilan). Le compte de résultat, lui, présente les charges à gauche et les produits à droite."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q12",
+    stem: "Les trois colonnes de l'actif du bilan comptable représentent respectivement :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Valeur d'achat TTC / Amortissements cumulés / Valeur de revente" },
+      { id:"B", text:"Brut (valeur d'origine) / Amortissements et provisions / Net (VNC)" },
+      { id:"C", text:"Actif immobilisé / Actif circulant / Trésorerie" },
+      { id:"D", text:"Valeur historique / Valeur actualisée / Valeur liquidative" },
+    ],
+    correct: ["B"],
+    expl: "Les 3 colonnes respectent deux principes comptables : <strong>coût historique</strong> (la valeur d'origine n'est jamais modifiée — colonne Brut) et <strong>image fidèle</strong> (la colonne Amortissements/Provisions corrige la valeur pour s'approcher de la réalité). <strong>Net = Brut − Amortissements et provisions</strong> = Valeur Nette Comptable (VNC)."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q13",
+    stem: "Une machine achetée 48 000 € le 01/07/N est amortie en linéaire sur 4 ans. L'exercice comptable va du 01/01 au 31/12. Quelle est la première annuité d'amortissement ?",
+    multi: false,
+    choices: [
+      { id:"A", text:"12 000 €  (annuité complète)" },
+      { id:"B", text:"4 000 €   (4 mois × 1 000 €)" },
+      { id:"C", text:"6 000 €   (6 mois sur 12)" },
+      { id:"D", text:"9 000 €   (9 mois sur 12)" },
+    ],
+    correct: ["C"],
+    expl: "<strong>Annuité constante = 48 000 / 4 = 12 000 €.</strong> La machine est mise en service le 01/07/N, soit 6 mois d'utilisation sur l'exercice. <strong>1re annuité = 12 000 × 6/12 = 6 000 €.</strong> La dernière annuité (année 5) sera le complément : 12 000 − 6 000 = 6 000 €. Les années 2, 3, 4 auront une annuité complète de 12 000 €."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q14",
+    stem: "Les terrains et les fonds de commerce :",
+    multi: false,
+    choices: [
+      { id:"A", text:"S'amortissent sur 20 ans comme les bâtiments" },
+      { id:"B", text:"Ne s'amortissent pas, mais peuvent faire l'objet d'une provision pour dépréciation" },
+      { id:"C", text:"Sont comptabilisés dans l'actif circulant" },
+      { id:"D", text:"Ne figurent jamais au bilan d'une entreprise" },
+    ],
+    correct: ["B"],
+    expl: "Les terrains et fonds de commerce sont des <strong>immobilisations non amortissables</strong> car leur valeur ne se réduit pas de manière prévisible et régulière (contrairement à une machine qui s'use). Cependant, si leur valeur diminue ponctuellement (ex. : crise, dépréciation du quartier), on peut constituer une <strong>provision pour dépréciation</strong> qui figurera en colonne « Amortissements et provisions » du bilan."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q15",
+    stem: "Dans le bilan fonctionnel, où classe-t-on les amortissements et provisions cumulés ?",
+    multi: false,
+    choices: [
+      { id:"A", text:"En emplois stables, en déduction des immobilisations brutes" },
+      { id:"B", text:"En ressources stables, car ils constituent un financement interne" },
+      { id:"C", text:"En trésorerie passive, comme les concours bancaires" },
+      { id:"D", text:"En passif circulant, avec les dettes fournisseurs" },
+    ],
+    correct: ["B"],
+    expl: "Dans le bilan fonctionnel, toutes les valeurs sont en <strong>brut</strong> à l'actif. Les amortissements et provisions ne viennent donc plus en déduction de l'actif : ils sont transférés en <strong>ressources stables</strong> car ils représentent un financement interne accumulé (la dépréciation n'a pas donné lieu à une sortie de trésorerie, donc ces « charges » restent dans l'entreprise)."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q16",
+    stem: "La formule du Fonds de Roulement Net Global (FRNG) est :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Actif circulant − Passif circulant" },
+      { id:"B", text:"Trésorerie active − Trésorerie passive" },
+      { id:"C", text:"Ressources stables − Emplois stables" },
+      { id:"D", text:"Capitaux propres − Dettes financières" },
+    ],
+    correct: ["C"],
+    expl: "<strong>FRNG = Ressources stables − Emplois stables.</strong> Il représente l'excédent de ressources à long terme (financement durable) disponible après avoir financé les investissements. Si positif, il constitue un « coussin de sécurité » pour financer le cycle d'exploitation. À noter : FRNG = Actif circulant + Trésorerie active − Passif circulant − Trésorerie passive (autre formule équivalente)."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q17",
+    stem: "Quelle relation relie le FRNG, le BFR et la Trésorerie Nette (TN) ?",
+    multi: false,
+    choices: [
+      { id:"A", text:"TN = BFR + FRNG" },
+      { id:"B", text:"FRNG = BFR × TN" },
+      { id:"C", text:"TN = FRNG − BFR" },
+      { id:"D", text:"BFR = FRNG + TN" },
+    ],
+    correct: ["C"],
+    expl: "<strong>TN = FRNG − BFR.</strong> Cette relation est fondamentale : si le FRNG couvre entièrement le BFR, la trésorerie est positive (situation saine). Si le BFR dépasse le FRNG, l'entreprise doit recourir aux concours bancaires (découverts), ce qui génère des agios et fragilise la trésorerie. On peut aussi calculer : <strong>TN = Trésorerie active − Trésorerie passive</strong>."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q18",
+    stem: "Un FRNG positif mais une trésorerie nette négative signifie que :",
+    multi: false,
+    choices: [
+      { id:"A", text:"L'équilibre financier n'est pas respecté car les emplois stables dépassent les ressources stables" },
+      { id:"B", text:"Le FRNG est positif mais insuffisant pour couvrir le BFR ; l'entreprise recourt aux concours bancaires" },
+      { id:"C", text:"L'entreprise est en faillite imminente et ses partenaires doivent s'inquiéter" },
+      { id:"D", text:"Le BFR est négatif, ce qui est bénéfique pour l'entreprise" },
+    ],
+    correct: ["B"],
+    expl: "Si FRNG &gt; 0 mais TN &lt; 0, cela signifie que <strong>BFR &gt; FRNG</strong> (car TN = FRNG − BFR). L'équilibre financier à long terme est <em>respecté</em> (FRNG positif), mais l'entreprise ne génère pas assez de ressources stables pour couvrir son besoin lié à l'exploitation. Elle compense par des concours bancaires courants (découverts), coûteux en agios. Cette situation n'est pas catastrophique mais doit être surveillée."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q19",
+    stem: "Le ratio d'indépendance financière (Fonds propres / Ressources stables) :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Doit être inférieur à 0,5 pour que l'entreprise soit considérée comme financièrement autonome" },
+      { id:"B", text:"Doit être supérieur à 0,5 (50 %) pour indiquer que les fonds propres couvrent au moins la moitié des ressources stables" },
+      { id:"C", text:"Doit être égal à 1 pour attester de l'absence totale de dettes financières" },
+      { id:"D", text:"N'est pas significatif pour évaluer la santé financière de l'entreprise" },
+    ],
+    correct: ["B"],
+    expl: "Ce ratio mesure <strong>l'autonomie financière</strong> de l'entreprise vis-à-vis de ses prêteurs. Il doit être <strong>≥ 0,5 (50 %)</strong> : cela signifie que les fonds propres financent au moins autant que les dettes bancaires à long terme. En dessous de 50 %, l'entreprise est trop dépendante des banques, ce qui peut nuire à sa crédibilité pour obtenir de nouveaux emprunts."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q20",
+    stem: "Le délai de règlement des créances clients (Créances clients × 360 / Ventes TTC) doit être :",
+    multi: false,
+    choices: [
+      { id:"A", text:"Le plus élevé possible, pour conserver les liquidités le plus longtemps dans l'entreprise" },
+      { id:"B", text:"Le moins élevé possible, car plus les clients paient vite, mieux c'est pour la trésorerie" },
+      { id:"C", text:"Exactement égal au délai fournisseurs pour équilibrer les flux" },
+      { id:"D", text:"Sans importance car les décalages de paiement n'affectent pas le BFR" },
+    ],
+    correct: ["B"],
+    expl: "Plus le délai client est <strong>court</strong>, plus les créances rentrent rapidement en trésorerie → le BFR diminue. À l'inverse, le délai fournisseurs doit être le <strong>plus long possible</strong> (payer tard = garder l'argent plus longtemps). Ces deux leviers sont essentiels pour maîtriser le BFR. Attention : les créances clients et dettes fournisseurs sont en TTC dans les formules de délai de rotation."
+  },
+  {
+    theme: "Thème 2 — Bilan comptable, amortissements et bilan fonctionnel",
+    id: "q21",
+    stem: "La situation typique de la grande distribution (type supermarché) est caractérisée par :",
+    multi: false,
+    choices: [
+      { id:"A", text:"FRNG positif, BFR positif et trésorerie positive" },
+      { id:"B", text:"FRNG négatif, BFR négatif et trésorerie positive" },
+      { id:"C", text:"FRNG négatif, BFR positif et trésorerie négative" },
+      { id:"D", text:"FRNG nul, BFR nul et trésorerie nulle" },
+    ],
+    correct: ["B"],
+    expl: "La grande distribution <strong>vend au comptant</strong> (peu ou pas de créances clients) mais <strong>paie ses fournisseurs à 60-90 jours</strong>. Résultat : les dettes fournisseurs dépassent les stocks + créances → <strong>BFR négatif</strong> (ressource en fonds de roulement). Même avec un FRNG négatif (investissements importants mal financés par ressources propres), la trésorerie est positive. Situation particulière mais viable."
+  },
+];
+
+/* ─────────────────────────────────────────────────────────────────
+   STATE
+───────────────────────────────────────────────────────────────── */
+let state = {}; // { qId: { selected: Set, validated: bool, correct: bool } }
+
+/* ─────────────────────────────────────────────────────────────────
+   RENDER
+───────────────────────────────────────────────────────────────── */
+function render() {
+  const container = document.getElementById('qcm-container');
+  container.innerHTML = '';
+
+  let lastTheme = null;
+  QUESTIONS.forEach((q, idx) => {
+    // Theme separator
+    if (q.theme !== lastTheme) {
+      const sep = document.createElement('div');
+      sep.className = 'theme-sep';
+      sep.innerHTML = `<div class="theme-sep-line"></div><div class="theme-sep-badge">${q.theme}</div><div class="theme-sep-line"></div>`;
+      container.appendChild(sep);
+      lastTheme = q.theme;
+    }
+
+    const s = state[q.id] || { selected: new Set(), validated: false, correct: false };
+    const locked = s.validated;
+
+    const card = document.createElement('div');
+    card.className = 'q-card';
+    card.id = 'card-' + q.id;
+
+    // Head
+    const head = document.createElement('div');
+    head.className = 'q-head';
+    head.innerHTML = `
+      <div class="q-num">${idx + 1}</div>
+      <div>
+        <div class="q-text">${q.stem}</div>
+        ${q.multi ? `<div class="q-multi-badge">⚠ Plusieurs réponses possibles</div>` : ''}
+      </div>`;
+    card.appendChild(head);
+
+    // Choices
+    const choicesDiv = document.createElement('div');
+    choicesDiv.className = 'choices';
+
+    q.choices.forEach(c => {
+      const isSelected = s.selected.has(c.id);
+      const isCorrect  = q.correct.includes(c.id);
+
+      let labelClass = 'choice-label';
+      if (locked) labelClass += ' locked';
+      if (!locked && isSelected) labelClass += ' selected';
+      if (locked && isCorrect)  labelClass += ' correct-ans';
+      if (locked && isSelected && !isCorrect) labelClass += ' wrong-sel';
+
+      let icon = '';
+      if (locked && isCorrect)              icon = '<span class="choice-icon">✓</span>';
+      else if (locked && isSelected && !isCorrect) icon = '<span class="choice-icon">✗</span>';
+
+      const inputType = q.multi ? 'checkbox' : 'radio';
+      const checkedAttr = isSelected ? 'checked' : '';
+
+      const label = document.createElement('label');
+      label.className = labelClass;
+      label.innerHTML = `
+        <input type="${inputType}" name="${q.id}" value="${c.id}" ${checkedAttr} ${locked ? 'disabled' : ''}>
+        <div class="choice-box">${c.id}</div>
+        <span class="choice-txt">${c.text}</span>
+        ${icon}`;
+
+      if (!locked) {
+        label.addEventListener('click', () => toggleChoice(q.id, c.id, q.multi));
+      }
+
+      choicesDiv.appendChild(label);
+    });
+    card.appendChild(choicesDiv);
+
+    // Footer (button)
+    const footer = document.createElement('div');
+    footer.className = 'q-footer';
+
+    const btn = document.createElement('button');
+    btn.className = 'btn-validate' + (locked ? ' done' : '');
+    btn.id = 'btn-' + q.id;
+    btn.disabled = !locked && s.selected.size === 0;
+    btn.textContent = locked ? 'Réponse validée ✓' : 'Valider ma réponse →';
+    if (!locked) btn.addEventListener('click', () => validate(q.id));
+    footer.appendChild(btn);
+    card.appendChild(footer);
+
+    // Feedback
+    const fb = document.createElement('div');
+    fb.id = 'fb-' + q.id;
+    fb.className = 'feedback' + (locked ? (s.correct ? ' fb-ok show' : ' fb-err show') : '');
+    if (locked) {
+      const correct = q.correct.join(', ');
+      fb.innerHTML = `
+        <div class="feedback-head">${s.correct ? '✓ Bonne réponse !' : '✗ Réponse incorrecte'}</div>
+        <div class="feedback-body">
+          ${!s.correct ? `<strong>Bonne${q.correct.length > 1 ? 's réponse' : ' réponse'} : ${correct}.</strong><br>` : ''}
+          ${q.expl}
+        </div>`;
+    }
+    card.appendChild(fb);
+
+    container.appendChild(card);
+  });
+
+  updateProgress();
+  checkShowSubmit();
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   INTERACTIONS
+───────────────────────────────────────────────────────────────── */
+function toggleChoice(qId, choiceId, multi) {
+  if (!state[qId]) state[qId] = { selected: new Set(), validated: false, correct: false };
+  const s = state[qId];
+  if (s.validated) return;
+
+  if (multi) {
+    if (s.selected.has(choiceId)) s.selected.delete(choiceId);
+    else s.selected.add(choiceId);
+  } else {
+    s.selected = new Set([choiceId]);
+  }
+
+  // Update btn state
+  const btn = document.getElementById('btn-' + qId);
+  if (btn) btn.disabled = s.selected.size === 0;
+
+  // Re-render just this card's choices
+  const q = QUESTIONS.find(x => x.id === qId);
+  const choicesDiv = document.querySelector('#card-' + qId + ' .choices');
+  if (choicesDiv) {
+    q.choices.forEach(c => {
+      const label = choicesDiv.querySelector(`label:has(input[value="${c.id}"])`);
+      if (label) {
+        label.className = 'choice-label' + (s.selected.has(c.id) ? ' selected' : '');
+        const box = label.querySelector('.choice-box');
+        if (box) box.style.background = s.selected.has(c.id) ? 'var(--accent)' : '';
+      }
+    });
+  }
+}
+
+function validate(qId) {
+  if (!state[qId]) state[qId] = { selected: new Set(), validated: false, correct: false };
+  const s = state[qId];
+  if (s.validated || s.selected.size === 0) return;
+
+  const q = QUESTIONS.find(x => x.id === qId);
+  const correctSet = new Set(q.correct);
+  const selectedArr = [...s.selected].sort().join(',');
+  const correctArr  = [...correctSet].sort().join(',');
+  s.correct = selectedArr === correctArr;
+  s.validated = true;
+
+  // Update card
+  const card = document.getElementById('card-' + qId);
+  const choicesDiv = card.querySelector('.choices');
+  q.choices.forEach(c => {
+    const label = choicesDiv.querySelector(`label:has(input[value="${c.id}"])`);
+    if (!label) return;
+    label.classList.add('locked');
+    label.classList.remove('selected');
+    const isCorrect = correctSet.has(c.id);
+    const isSelected = s.selected.has(c.id);
+    if (isCorrect) {
+      label.classList.add('correct-ans');
+      label.insertAdjacentHTML('beforeend','<span class="choice-icon">✓</span>');
+    } else if (isSelected) {
+      label.classList.add('wrong-sel');
+      label.insertAdjacentHTML('beforeend','<span class="choice-icon">✗</span>');
+    }
+  });
+
+  // Button
+  const btn = document.getElementById('btn-' + qId);
+  btn.textContent = 'Réponse validée ✓';
+  btn.className = 'btn-validate done';
+  btn.disabled = true;
+
+  // Feedback
+  const fb = document.getElementById('fb-' + qId);
+  fb.className = 'feedback ' + (s.correct ? 'fb-ok' : 'fb-err') + ' show';
+  const correct = q.correct.join(', ');
+  fb.innerHTML = `
+    <div class="feedback-head">${s.correct ? '✓ Bonne réponse !' : '✗ Réponse incorrecte'}</div>
+    <div class="feedback-body">
+      ${!s.correct ? `<strong>Bonne${q.correct.length > 1 ? 's réponses' : ' réponse'} : ${correct}.</strong><br>` : ''}
+      ${q.expl}
+    </div>`;
+
+  updateProgress();
+  checkShowSubmit();
+
+  // Smooth scroll to next unanswered
+  setTimeout(() => {
+    const next = QUESTIONS.find(x => !state[x.id]?.validated);
+    if (next) {
+      const el = document.getElementById('card-' + next.id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 300);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   PROGRESS
+───────────────────────────────────────────────────────────────── */
+function updateProgress() {
+  const total     = QUESTIONS.length;
+  const answered  = Object.values(state).filter(s => s.validated).length;
+  const pct       = Math.round(answered / total * 100);
+  document.getElementById('prog-text').textContent = `${answered} / ${total} répondu(es)`;
+  document.getElementById('prog-pct').textContent  = pct + ' %';
+  document.getElementById('prog-fill').style.width = pct + '%';
+}
+
+function checkShowSubmit() {
+  const all = Object.values(state).filter(s => s.validated).length;
+  document.getElementById('submit-wrap').style.display = all === QUESTIONS.length ? 'block' : 'none';
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SCORE
+───────────────────────────────────────────────────────────────── */
+function showScore() {
+  const total  = QUESTIONS.length;
+  let ok = 0, wrong = 0, skip = 0;
+  QUESTIONS.forEach(q => {
+    const s = state[q.id];
+    if (!s || !s.validated) skip++;
+    else if (s.correct) ok++;
+    else wrong++;
+  });
+
+  document.getElementById('stat-ok').textContent    = ok;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-skip').textContent  = skip;
+  document.getElementById('score-num').textContent  = ok;
+  document.getElementById('score-label').textContent = `/ ${total} points`;
+
+  const pct = Math.round(ok / total * 100);
+
+  let title, msg, ringColor;
+  if (pct >= 80) {
+    title = "Excellent travail ! 🎉"; msg = "Vous maîtrisez bien les concepts du bilan et du compte de résultat."; ringColor = "var(--ok)";
+  } else if (pct >= 60) {
+    title = "Bien !"; msg = "Des bases solides. Revoyez les points sur lesquels vous avez hésité."; ringColor = "#f59e0b";
+  } else if (pct >= 40) {
+    title = "À consolider"; msg = "Relisez attentivement les justifications des questions ratées."; ringColor = "#f59e0b";
+  } else {
+    title = "Des révisions s'imposent"; msg = "Reprenez le cours sur le bilan fonctionnel et les SIG avant l'examen."; ringColor = "var(--wrong)";
+  }
+
+  document.getElementById('score-title').textContent = title;
+  document.getElementById('score-msg').textContent   = msg;
+
+  // Ring animation
+  const circ = 2 * Math.PI * 60; // r=60
+  const arc  = document.getElementById('ring-arc');
+  arc.style.stroke = ringColor;
+  arc.style.strokeDasharray  = circ;
+  arc.style.strokeDashoffset = circ;
+  setTimeout(() => {
+    arc.style.strokeDashoffset = circ * (1 - ok / total);
+  }, 100);
+
+  document.getElementById('submit-wrap').style.display   = 'none';
+  document.getElementById('score-section').style.display = 'block';
+  document.getElementById('score-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   RESTART
+───────────────────────────────────────────────────────────────── */
+function restart() {
+  state = {};
+  document.getElementById('score-section').style.display = 'none';
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────────────────── */
+render();
+</script>
+</body>
+</html>
